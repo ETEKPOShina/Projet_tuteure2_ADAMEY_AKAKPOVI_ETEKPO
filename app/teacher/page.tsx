@@ -222,6 +222,9 @@
 // }
 
 
+
+
+
 'use client';
 /** @jsxImportSource react */
 
@@ -254,27 +257,55 @@ import {
   IconChevronRight,
   IconAlertTriangle,
   IconCalendar,
-  IconCalendarPlus
+  IconCalendarPlus,
+  IconX
 } from '@tabler/icons-react'
 
 import { Sheet } from 'tamagui'
 import { IconMenu2 } from '@tabler/icons-react'
 
 import CalendarWidget from './calendarItem';
+import { useState } from 'react';
 
 export default function Dashboard() {
+  const [menuOpen, setMenuOpen] = useState(true)
   return (
     <XStack f={1} h="100vh">
+
+      {/* <XStack 
+        display="none" 
+        $gtMd={{ display: 'none' }} 
+        $sm={{ display: 'flex' }}
+        p="$4" 
+        jc="space-between" 
+        ai="center"
+        bg="$background"
+        borderBottomWidth={1}
+        borderColor="$borderColor"
+      >
+        <Button 
+          size="$3" 
+          chromeless 
+          icon={<IconMenu2 size={24} />}
+          onPress={() => setMenuOpen(true)}
+        />
+        <Text fontWeight="700">Univ-Lomé</Text>
+      </XStack> */}
+
+      
       {/* Sidebar */}
       <YStack 
         w={256} 
         bg="$background" 
+        $sm={{ display: 'none' }}
         p="$4" 
         borderRightWidth={1} 
         borderColor="$borderColor"
         jc="space-between"
       >
         <YStack gap="$6">
+
+                    
           {/* Logo */}
           <XStack ai="center" gap="$3" px="$2">
             <YStack 
@@ -286,8 +317,19 @@ export default function Dashboard() {
               br="$4"
             >
               <IconSchool size={24} color="white" />
+
+             
             </YStack>
             <H3 fontWeight="700">Univ-Lomé</H3>
+            <Button 
+              size="$3" 
+              chromeless 
+              icon={menuOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
+              display="none" 
+              $gtMd={{ display: 'none' }} 
+              $sm={{ display: 'flex' }}
+              onPress={() => setMenuOpen(!menuOpen)}
+            />
           </XStack>
 
           {/* Profile */}
@@ -302,6 +344,8 @@ export default function Dashboard() {
                 <Text fontSize="$3" color="$gray11">Enseignant-Chercheur</Text>
               </YStack>
             </XStack>
+
+            
 
             {/* Navigation */}
             <YStack gap="$2">
@@ -384,16 +428,202 @@ export default function Dashboard() {
         </YStack>
       </YStack>
 
+      {/* Mobile Sheet */}
+        <Sheet
+          modal
+          open={menuOpen}
+          onOpenChange={setMenuOpen}
+          snapPoints={[90]}
+          dismissOnSnapToBottom
+        >
+          <Sheet.Overlay />
+          <Sheet.Frame bg="$background" p="$4">
+            <XStack jc="space-between" ai="center" mb="$4">
+              <Text fontWeight="700" fontSize="$6" color='#808080'>Menu</Text>
+              <Button 
+                size="$3" 
+                chromeless 
+                icon={<IconX size={24} color='#808080' strokeWidth={4} />}
+                onPress={() => setMenuOpen(false)}
+              />
+            </XStack>
+            
+            {/* Même contenu que la sidebar */}
+            <YStack gap="$6">
+              {/* ... contenu du menu ... */}
+              <YStack 
+                // w={256} 
+                bg="$background" 
+                // $sm={{ display: 'none' }}
+                p="$4" 
+                borderRightWidth={1} 
+                borderColor="$borderColor"
+                jc="space-between"
+              >
+                <YStack gap="$6">
+
+                            
+                  {/* Logo */}
+                  {/* <XStack ai="center" gap="$3" px="$2">
+                    <YStack 
+                      bg="$blue10" 
+                      w={40} 
+                      h={40} 
+                      ai="center" 
+                      jc="center" 
+                      br="$4"
+                    >
+                      <IconSchool size={24} color="white" />
+
+                    
+                    </YStack>
+                    <H3 fontWeight="700">Univ-Lomé</H3>
+                    <Button 
+                      size="$3" 
+                      chromeless 
+                      icon={menuOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
+                      display="none" 
+                      $gtMd={{ display: 'none' }} 
+                      $sm={{ display: 'flex' }}
+                      onPress={() => setMenuOpen(!menuOpen)}
+                    />
+                  </XStack> */}
+
+                  {/* Profile */}
+                  <YStack gap="$4">
+                    <XStack ai="center" gap="$3">
+                      <Avatar circular size="$4">
+                        <Avatar.Image src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjPwiFiYtPJ9HsLU5iL-dSMUG1mfkrUWlgKUYToc_2XO2HxsAGYQU-0r1O71A-tYs-BMB9YTeWC_s_LXacquYLpYb_GJVg9oZIXOqPU9vlpjbivQ_QUiyS2ZerWBsgNI-FX1pFB8wQdV9BOtgveVOwesq6OOGUibzehNORPuTQuSCunSRaHzG84d9dYDywIA6FnmDmUsGeIf1jflUSofRKyQK6G8BWrPCi4lUGUv65rR2XxU_LyqWqD_2em9G_QXZzQspH_Gd_Ph8" />
+                        <Avatar.Fallback bc="$blue10" />
+                      </Avatar>
+                      <YStack f={1}>
+                        <Text fontWeight="600" fontSize="$4">Professeur Durand</Text>
+                        <Text fontSize="$3" color="$gray11">Enseignant-Chercheur</Text>
+                      </YStack>
+                    </XStack>
+
+                    
+
+                    {/* Navigation */}
+                    <YStack gap="$2">
+                      <Button 
+                        bg="$blue3" 
+                        // color="$blue11" 
+                        color={'#003366'}
+                        jc="flex-start" 
+                        fontSize={'$4'} fontWeight={'$6'}
+                        icon={<IconLayoutDashboard size={20} color={'#003366'}/>}
+                      >
+                        Tableau de bord
+                      </Button>
+                      <Button 
+                        bg="transparent" 
+                        color={'#003366'}
+                        jc="flex-start" 
+                        fontSize={'$4'} fontWeight={'$6'}
+                        icon={<IconStars size={20} color={'#003366'} />}
+                        hoverStyle={{ bg: "$gray3" }}
+                      >
+                        Mes Évaluations
+                      </Button>
+                      <Button 
+                        bg="transparent" 
+                        color={'#003366'}
+                        jc="flex-start" 
+                        fontSize={'$4'} fontWeight={'$6'}
+                        icon={<IconCalendarMonth size={20} color={'#003366'} />}
+                        hoverStyle={{ bg: "$gray3" }}
+                      >
+                        Calendrier Complet
+                      </Button>
+                      <Button 
+                        bg="transparent" 
+                        color={'#003366'}
+                        jc="flex-start" 
+                        fontSize={'$4'} fontWeight={'$6'}
+                        icon={<IconArchive size={20} color={'#003366'} />}
+                        hoverStyle={{ bg: "$gray3" }}
+                      >
+                        Archives
+                      </Button>
+                      <Button 
+                        bg="transparent" 
+                        color={'#003366'}
+                        jc="flex-start" 
+                        fontSize={'$4'} fontWeight={'$6'}
+                        icon={<IconUser size={20} color={'#003366'} />}
+                        hoverStyle={{ bg: "$gray3" }}
+                      >
+                        Profil
+                      </Button>
+                    </YStack>
+                  </YStack>
+                </YStack>
+
+                {/* Bottom Navigation */}
+                <YStack gap="$1" pt="$4" borderTopWidth={1} borderColor="$borderColor">
+                  <Button 
+                    bg="transparent" 
+                    color="$color" 
+                    jc="flex-start" 
+                    fontSize={'$4'} fontWeight={'$6'}
+                    icon={<IconSettings size={20} color='#171717' />}
+                    hoverStyle={{ bg: "$gray3" }}
+                  >
+                    Paramètres
+                  </Button>
+                  <Button 
+                    bg="transparent" 
+                    color="$color" 
+                    jc="flex-start" 
+                    fontSize={'$4'} fontWeight={'$6'}
+                    icon={<IconLogout size={20} color='#171717' />}
+                    hoverStyle={{ bg: "$gray3" }}
+                  >
+                    Déconnexion
+                  </Button>
+                </YStack>
+              </YStack>              
+            </YStack>
+          </Sheet.Frame>
+        </Sheet>
+
       {/* Main Content */}
       <ScrollView f={1} bg={'#F4F7FA'}>
-        <YStack p="$8" maw={1400} mx="auto" >
+        
+        <YStack p="$8" maw={1400} mx="auto" $sm={{p:'$4',w:'100%'}}>
+          <XStack ai="center" gap="$3" px="$1" display='none' $sm={{display:'flex'}} mb='$3' w={300} jc={'space-between'}>
+            <YStack 
+              bg="$blue10" 
+              w={40} 
+              h={40} 
+              ai="center" 
+              jc="center" 
+              br="$4"
+            >
+              <IconSchool size={24} color="white" />
+
+             
+            </YStack>
+            <H3 fontWeight="700">Univ-Lomé</H3>
+            <Button 
+              size="$3" 
+              chromeless 
+              icon={menuOpen ? <IconX size={24} color='#808080' strokeWidth={4} /> : <IconMenu2 size={24} color='#808080' strokeWidth={4}/>}
+              display="none" 
+              $gtMd={{ display: 'none' }} 
+              $sm={{ display: 'flex' }}
+              marginRight="auto"
+              onPress={() => setMenuOpen(!menuOpen)}
+            />
+          </XStack>
           {/* Header */}
           <XStack jc="space-between" ai="center" mb="$8" flexWrap="wrap" gap="$4">
             <YStack gap="$1">
               <H1 fontWeight="700" fontSize="$9">Tableau de Bord</H1>
               <Text fontSize="$5" color="$gray11">Bonjour, Professeur Durand</Text>
             </YStack>
-            <XStack gap="$4">
+            <XStack gap="$4" flexWrap='nowrap' $sm={{ flexWrap: 'wrap', gap: '$2', flexDirection :'column' }}>
               <Button 
                 variant="outlined" 
                 borderColor={'#003366'}
@@ -401,6 +631,7 @@ export default function Dashboard() {
                 color={'#003366'}
                 fontWeight={'$6'}
                 icon={<IconCalendarEvent size={18} color={'#003366'} />}
+                $sm={{w:'100%'}}
               >
                 Proposer une date
               </Button>
