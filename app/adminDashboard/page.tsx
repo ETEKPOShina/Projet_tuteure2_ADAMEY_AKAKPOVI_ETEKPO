@@ -17,19 +17,19 @@ import {
   Separator
 } from 'tamagui'
 import { 
-  Home, 
-  Shield, 
-  Users, 
-  FileText, 
-  Settings, 
-  HelpCircle,
-  Search,
-  Plus,
-  AlertCircle,
-  UserX,
-  FileCheck,
-  ChevronDown
-} from '@tamagui/lucide-icons'
+  IconHome,
+  IconShield,
+  IconUsers,
+  IconFileText,
+  IconSettings,
+  IconHelpCircle,
+  IconSearch,
+  IconPlus,
+  IconAlertCircle,
+  IconUserX,
+  IconFileCheck,
+  IconChevronDown
+} from '@tabler/icons-react'
 
 // Styled components
 const Sidebar = styled(YStack, {
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
             active={activeNav === 'dashboard'}
             onPress={() => setActiveNav('dashboard')}
           >
-            <Home size={20} />
+            <IconHome size={20} />
             <Text>Dashboard</Text>
           </NavItem>
           
@@ -134,7 +134,7 @@ export default function AdminDashboard() {
             active={activeNav === 'defenses'}
             onPress={() => setActiveNav('defenses')}
           >
-            <Shield size={20} />
+            <IconShield size={20} />
             <Text>Defenses</Text>
           </NavItem>
           
@@ -142,7 +142,7 @@ export default function AdminDashboard() {
             active={activeNav === 'users'}
             onPress={() => setActiveNav('users')}
           >
-            <Users size={20} />
+            <IconUsers size={20} />
             <Text>Users</Text>
           </NavItem>
           
@@ -150,7 +150,7 @@ export default function AdminDashboard() {
             active={activeNav === 'reports'}
             onPress={() => setActiveNav('reports')}
           >
-            <FileText size={20} />
+            <IconFileText size={20} />
             <Text>Reports</Text>
           </NavItem>
         </YStack>
@@ -158,11 +158,11 @@ export default function AdminDashboard() {
         {/* Bottom actions */}
         <YStack gap="$2" borderTopWidth={1} borderTopColor="$borderColor" paddingTop="$4">
           <NavItem>
-            <Settings size={20} />
+            <IconSettings size={20} />
             <Text>Settings</Text>
           </NavItem>
           <NavItem>
-            <HelpCircle size={20} />
+            <IconHelpCircle size={20} />
             <Text>Help</Text>
           </NavItem>
           
@@ -180,7 +180,7 @@ export default function AdminDashboard() {
               <Text fontWeight="600" fontSize="$3">Admin User</Text>
               <Text fontSize="$2" color="$gray10">admin@univ.edu</Text>
             </YStack>
-            <ChevronDown size={16} color="$gray10" />
+            <IconChevronDown size={16} color="$gray10" />
           </XStack>
         </YStack>
       </Sidebar>
@@ -207,7 +207,7 @@ export default function AdminDashboard() {
               borderWidth={1}
               borderColor="$borderColor"
             >
-              <Search size={20} color="$gray10" />
+              <IconSearch size={20} color="$gray10" />
               <Input 
                 flex={1}
                 placeholder="Search students, teachers..." 
@@ -218,7 +218,7 @@ export default function AdminDashboard() {
             <Button 
               backgroundColor="$blue9" 
               color="white"
-              icon={<Plus size={20} />}
+              icon={<IconPlus size={20} />}
               pressStyle={{ backgroundColor: '$blue10' }}
             >
               New Defense
@@ -297,7 +297,7 @@ export default function AdminDashboard() {
               
               <ActionCard>
                 <Circle size={40} backgroundColor="$red3">
-                  <AlertCircle size={20} color="$red9" />
+                  <IconAlertCircle size={20} color="$red9" />
                 </Circle>
                 <YStack flex={1} gap="$1">
                   <Text fontWeight="600" fontSize="$4">Overdue Thesis Submissions</Text>
@@ -307,7 +307,7 @@ export default function AdminDashboard() {
 
               <ActionCard>
                 <Circle size={40} backgroundColor="$orange3">
-                  <UserX size={20} color="$orange9" />
+                  <IconUserX size={20} color="$orange9" />
                 </Circle>
                 <YStack flex={1} gap="$1">
                   <Text fontWeight="600" fontSize="$4">Unassigned Jury Members</Text>
@@ -317,7 +317,7 @@ export default function AdminDashboard() {
 
               <ActionCard>
                 <Circle size={40} backgroundColor="$blue3">
-                  <FileCheck size={20} color="$blue9" />
+                  <IconFileCheck size={20} color="$blue9" />
                 </Circle>
                 <YStack flex={1} gap="$1">
                   <Text fontWeight="600" fontSize="$4">New Defense Requests</Text>
