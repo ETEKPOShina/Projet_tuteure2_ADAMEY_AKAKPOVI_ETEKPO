@@ -1,37 +1,49 @@
 {
-  "name": "agency",
+  "name": "thesis-manager",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --hostname 0.0.0.0 --port 3000",
+    "dev": "next dev --hostname 0.0.0.0 --port 3001",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "clean": "rm -rf .next .turbo .cache node_modules/.cache"
+    "relay": "relay-compiler",
+    "clean": "rm -rf .next .turbo .cache node_modules/.cache",
+    "download-schema": "node scripts/downloadSchema.js"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^7.3.6",
     "@mui/x-date-pickers": "^8.23.0",
+    "@supabase/supabase-js": "^2.95.3",
     "@tabler/icons-react": "^3.35.0",
     "@tamagui/config": "^1.140.4",
     "@tamagui/core": "^1.140.4",
     "@tamagui/next-plugin": "^1.140.4",
     "dayjs": "^1.11.19",
+    "firebase": "^12.9.0",
+    "jwt-decode": "^4.0.0",
     "next": "16.0.10",
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "react-native-web": "^0.21.2",
-    "tamagui": "^1.140.4"
+    "react-relay": "^20.1.1",
+    "relay-runtime": "^20.1.1",
+    "tamagui": "^1.140.4",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/react-relay": "^18.2.1",
+    "babel-plugin-relay": "^20.1.1",
+    "baseline-browser-mapping": "^2.9.19",
     "eslint": "^9",
     "eslint-config-next": "16.0.10",
+    "relay-compiler": "^20.1.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

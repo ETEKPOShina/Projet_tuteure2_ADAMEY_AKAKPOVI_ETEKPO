@@ -1,0 +1,569 @@
+schema {
+  query: ThesisQuery
+  mutation: ThesisMutation
+}
+
+"""Queries pour Thesis Manager"""
+type ThesisQuery {
+  me: CustomUserType
+  user(id: ID!): CustomUserType
+  users(typeUtilisateur: String, search: String): [CustomUserType]
+  etudiants(annee: Int, filiereId: ID): [EtudiantType]
+  enseignants(departementId: ID, grade: String): [EnseignantType]
+  structure(id: ID!): StructureAcademiqueType
+  structures(typeStructure: String): [StructureAcademiqueType]
+  hierarchie(id: ID!): StructureAcademiqueType
+  premiereUniversite: StructureAcademiqueType
+  maFiliere: StructureAcademiqueType
+  maSoutenance: SoutenanceType
+  dashboardStats: DashboardStatsType
+  soutenance(id: ID!): SoutenanceType
+  soutenances(statut: String, mode: String, dateMin: Date, dateMax: Date): [SoutenanceType]
+  soutenancesAVenir: [SoutenanceType]
+  soutenancesDuMois: [SoutenanceType]
+  soutenancesPaginated(page: Int = 1, pageSize: Int = 10): PaginatedSoutenanceType
+  travail(id: ID!): TravauxSoutenanceType
+  travaux(statut: String): [TravauxSoutenanceType]
+  mesTravaux: [TravauxSoutenanceType]
+  mesTravauxEncadres: [TravauxSoutenanceType]
+  travauxEnAttente: [TravauxSoutenanceType]
+  travauxAcceptes: [TravauxSoutenanceType]
+  travauxPaginated(page: Int = 1, pageSize: Int = 10): PaginatedTravauxType
+  jury(id: ID!): JuryType
+  jurysSoutenance(soutenanceId: ID!): [JuryType]
+  mesJurys: [JuryType]
+  document(id: ID!): DocumentType
+  documentsTravail(travailId: ID!): [DocumentType]
+  notification(id: ID!): NotificationType
+  mesNotifications(statut: String): [NotificationType]
+  notificationsNonLues: [NotificationType]
+  disponibilitesEnseignant(enseignantId: ID!): [DisponibiliteEnseignantType]
+  mesDisponibilites: [DisponibiliteEnseignantType]
+  journalConnexions: [JournalConnexionType]
+  historiqueSoutenance(soutenanceId: ID!): [HistoriqueSoutenanceType]
+}
+
+"""Type pour un utilisateur personnalisé"""
+type CustomUserType {
+  id: ID
+  username: String
+  email: String
+  firstName: String
+  lastName: String
+  typeUtilisateur: String
+  typeUtilisateurDisplay: String
+  actif: Boolean
+  dateCreation: DateTime
+  dateModification: DateTime
+  profilEtudiant: EtudiantType
+  profilEnseignant: EnseignantType
+  rolesAdmin: [RoleAdministrateurType]
+  notifications: [NotificationType]
+  connexions: [JournalConnexionType]
+}
+
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
+
+"""Type pour un profil étudiant"""
+type EtudiantType {
+  id: ID
+  utilisateur: CustomUserType
+  matricule: String
+  specialite: String
+  annee: Int
+  filiere: StructureAcademiqueType
+  filiereNom: String
+  dateInscription: DateTime
+  dateModification: DateTime
+  travaux: [TravauxSoutenanceType]
+  travauxAcceptes: [TravauxSoutenanceType]
+  travauxEnAttente: [TravauxSoutenanceType]
+}
+
+"""Type pour une structure académique"""
+type StructureAcademiqueType {
+  id: ID
+  type: String
+  typeDisplay: String
+  nom: String
+  description: String
+  fullPath: String
+  dateCreation: DateTime
+  parent: StructureAcademiqueType
+  enfants: [StructureAcademiqueType]
+  etudiantsCount: Int
+  enseignantsCount: Int
+}
+
+"""Type pour un travail de soutenance"""
+type TravauxSoutenanceType {
+  id: ID
+  titre: String
+  resume: String
+  typeTravail: String
+  typeDisplay: String
+  motsCles: String
+  statut: String
+  statutDisplay: String
+  motifRejet: String
+  dateCreation: DateTime
+  dateSoumission: DateTime
+  dateAcceptation: DateTime
+  dateModification: DateTime
+  etudiant: EtudiantType
+  etudiantNom: String
+  encadrant: EnseignantType
+  encadrantNom: String
+  soutenance: SoutenanceType
+  documents: [DocumentType]
+  progression: ProgressionType
+}
+
+"""Type pour un profil enseignant"""
+type EnseignantType {
+  id: ID
+  utilisateur: CustomUserType
+  grade: String
+  gradeDisplay: String
+  specialite: String
+  departement: StructureAcademiqueType
+  departementNom: String
+  dateEmbauche: DateTime
+  dateModification: DateTime
+  disponibilites: [DisponibiliteEnseignantType]
+  jurys: [JuryType]
+  travauxEncadres: [TravauxSoutenanceType]
+  jurysCount: Int
+}
+
+"""Type pour une disponibilité d'enseignant"""
+type DisponibiliteEnseignantType {
+  id: ID
+  enseignant: EnseignantType
+  jourSemaine: String
+  jourDisplay: String
+  heureDebut: Time
+  heureFin: Time
+  estDisponible: Boolean
+  dateCreation: DateTime
+}
+
+"""
+The `Time` scalar type represents a Time value as
+specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar Time
+
+"""Type pour un membre du jury"""
+type JuryType {
+  id: ID
+  soutenance: SoutenanceType
+  enseignant: EnseignantType
+  enseignantNom: String
+  role: String
+  roleDisplay: String
+  note: Float
+  commentaire: String
+  dateCreation: DateTime
+  dateModification: DateTime
+}
+
+"""Type pour une soutenance"""
+type SoutenanceType {
+  id: ID
+  dateSoutenance: Date
+  heureDebut: Time
+  heureFin: Time
+  salle: String
+  capacite: Int
+  mode: String
+  modeDisplay: String
+  statut: String
+  statutDisplay: String
+  dateCreation: DateTime
+  dateModification: DateTime
+  travaux: [TravauxSoutenanceType]
+  jurys: [JuryType]
+  jurysCount: Int
+  notifications: [NotificationType]
+  historiques: [HistoriqueSoutenanceType]
+}
+
+"""
+The `Date` scalar type represents a Date
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar Date
+
+"""Type pour une notification"""
+type NotificationType {
+  id: ID
+  titre: String
+  contenu: String
+  typeNotification: String
+  typeDisplay: String
+  statut: String
+  statutDisplay: String
+  canal: String
+  canalDisplay: String
+  dateEnvoi: DateTime
+  dateLecture: DateTime
+  utilisateur: CustomUserType
+  soutenance: SoutenanceType
+}
+
+"""Type pour l'historique des soutenances"""
+type HistoriqueSoutenanceType {
+  id: ID
+  soutenance: SoutenanceType
+  ancienStatut: String
+  nouveauStatut: String
+  utilisateurModifiant: CustomUserType
+  utilisateurNom: String
+  motif: String
+  dateModification: DateTime
+}
+
+"""Type pour un document"""
+type DocumentType {
+  id: ID
+  nomFichier: String
+  typeDocument: String
+  typeDisplay: String
+  uri: String
+  tailleOctets: Int
+  tailleMb: Float
+  dateDepot: DateTime
+  dateModification: DateTime
+  travail: TravauxSoutenanceType
+}
+
+"""Type pour afficher la progression d'un travail"""
+type ProgressionType {
+  etape: String
+  pourcentage: Float
+  message: String
+}
+
+"""Type pour un rôle administrateur"""
+type RoleAdministrateurType {
+  id: ID
+  utilisateur: CustomUserType
+  niveau: String
+  niveauDisplay: String
+  structure: StructureAcademiqueType
+  structureNom: String
+  actif: Boolean
+  dateAttribution: DateTime
+}
+
+"""Type pour le journal des connexions"""
+type JournalConnexionType {
+  id: ID
+  utilisateur: CustomUserType
+  dateConnexion: DateTime
+  adresseIp: String
+  userAgent: String
+  succes: Boolean
+  succesDisplay: String
+}
+
+"""Statistiques globales pour le dashboard Admin"""
+type DashboardStatsType {
+  totalEtudiants: Int
+  totalEnseignants: Int
+  travauxEnAttente: Int
+  travauxAcceptes: Int
+  soutenancesPlanifiees: Int
+  soutenancesTerminees: Int
+  comptesInactifs: Int
+}
+
+"""Type pour les soutenances paginées"""
+type PaginatedSoutenanceType {
+  total: Int
+  page: Int
+  pageSize: Int
+  items: [SoutenanceType]
+}
+
+"""Type pour les travaux paginés"""
+type PaginatedTravauxType {
+  total: Int
+  page: Int
+  pageSize: Int
+  items: [TravauxSoutenanceType]
+}
+
+"""Mutations pour Thesis Manager"""
+type ThesisMutation {
+  """
+  Mutation pour créer un compte
+  
+  Example:
+  mutation {
+      signup(
+          email: "etudiant@univ.fr"
+          password: "SecurePass123"
+          firstName: "Jean"
+          lastName: "Dupont"
+          typeUtilisateur: "ETUDIANT"
+      ) {
+          success
+          message
+          user { id email }
+          accessToken
+          refreshToken
+      }
+  }
+  """
+  signup(annee: Int, departementId: ID, email: String!, filiereId: ID, firstName: String, grade: String, lastName: String, matricule: String, password: String!, specialite: String, typeUtilisateur: String!): SignupMutation
+
+  """
+  Mutation pour se connecter
+  
+  Example:
+  mutation {
+      login(email: "user@univ.fr", password: "SecurePass123") {
+          success
+          message
+          user { id email }
+          accessToken
+          refreshToken
+      }
+  }
+  """
+  login(email: String!, password: String!): LoginMutation
+  refreshToken(refreshToken: String): Refresh
+
+  """Activer ou désactiver un compte utilisateur (Admin)"""
+  validerCompte(actif: Boolean!, userId: ID!): ValiderCompteMutation
+
+  """Mettre à jour le profil utilisateur"""
+  updateProfile(annee: Int, email: String, filiereId: ID, firstName: String, lastName: String): UpdateProfileMutation
+
+  """Promeut un utilisateur en administrateur et lui assigne un rôle."""
+  assignAdminRole(niveau: String!, structureId: ID, userId: ID!): AssignAdminRoleMutation
+
+  """Créer une nouvelle soutenance (Admin)"""
+  createSoutenance(capacite: Int!, dateSoutenance: Date!, heureDebut: Time!, heureFin: Time, mode: String!, salle: String!): CreateSoutenanceMutation
+
+  """Mettre à jour une soutenance (Admin)"""
+  updateSoutenance(capacite: Int, dateSoutenance: Date, heureDebut: Time, heureFin: Time, id: ID!, mode: String, salle: String, statut: String): UpdateSoutenanceMutation
+
+  """Assigner un travail à une soutenance (Admin)"""
+  programmerTravail(soutenanceId: ID!, travailId: ID!): ProgrammerTravailMutation
+
+  """Marquer une soutenance comme terminée"""
+  marquerSoutenanceTerminee(id: ID!): MarquerSoutenanceTermineeMutation
+
+  """Soumettre un travail (Étudiant)"""
+  submitTravail(encadrantId: ID, motsCles: String, resume: String, titre: String!, typeTravail: String!): SubmitTravauxMutation
+
+  """Accepter un travail (Admin)"""
+  accepterTravail(id: ID!): AccepterTravailMutation
+
+  """Rejeter un travail (Admin)"""
+  rejeterTravail(id: ID!, motif: String!): RejeterTravailMutation
+
+  """Ajouter un document (URL externe) à un travail"""
+  ajouterDocument(nomFichier: String!, tailleOctets: Int, travailId: ID!, typeDocument: String!, url: String!): AjouterDocumentMutation
+
+  """Assigner un jury à une soutenance (Admin)"""
+  assignerJury(enseignantId: ID!, role: String!, soutenanceId: ID!): AssignerJuryMutation
+
+  """Saisir une note et commentaire (Jury)"""
+  saisirNote(commentaire: String, juryId: ID!, note: Float!): SaisirNoteMutation
+
+  """Marquer une notification comme lue"""
+  marquerNotificationCommeLue(id: ID!): MarquerNotificationCommelueMutation
+
+  """Marquer toutes les notifications comme lues"""
+  marquerToutCommeLu: MarquerToutCommelueMutation
+
+  """Créer une disponibilité (Enseignant)"""
+  createDisponibilite(heureDebut: Time!, heureFin: Time!, jourSemaine: String!): CreateDisponibiliteMutation
+}
+
+"""
+Mutation pour créer un compte
+
+Example:
+mutation {
+    signup(
+        email: "etudiant@univ.fr"
+        password: "SecurePass123"
+        firstName: "Jean"
+        lastName: "Dupont"
+        typeUtilisateur: "ETUDIANT"
+    ) {
+        success
+        message
+        user { id email }
+        accessToken
+        refreshToken
+    }
+}
+"""
+type SignupMutation {
+  success: Boolean
+  message: String
+  user: CustomUserType
+  accessToken: String
+  refreshToken: String
+}
+
+"""
+Mutation pour se connecter
+
+Example:
+mutation {
+    login(email: "user@univ.fr", password: "SecurePass123") {
+        success
+        message
+        user { id email }
+        accessToken
+        refreshToken
+    }
+}
+"""
+type LoginMutation {
+  success: Boolean
+  message: String
+  user: CustomUserType
+  accessToken: String
+  refreshToken: String
+}
+
+type Refresh {
+  payload: GenericScalar!
+  refreshExpiresIn: Int!
+  token: String!
+  refreshToken: String!
+}
+
+"""
+The `GenericScalar` scalar type represents a generic
+GraphQL scalar value that could be:
+String, Boolean, Int, Float, List or Object.
+"""
+scalar GenericScalar
+
+"""Activer ou désactiver un compte utilisateur (Admin)"""
+type ValiderCompteMutation {
+  success: Boolean
+  message: String
+  user: CustomUserType
+}
+
+"""Mettre à jour le profil utilisateur"""
+type UpdateProfileMutation {
+  success: Boolean
+  message: String
+  user: CustomUserType
+}
+
+"""Promeut un utilisateur en administrateur et lui assigne un rôle."""
+type AssignAdminRoleMutation {
+  success: Boolean
+  message: String
+  role: RoleAdministrateurType
+}
+
+"""Créer une nouvelle soutenance (Admin)"""
+type CreateSoutenanceMutation {
+  success: Boolean
+  message: String
+  soutenance: SoutenanceType
+}
+
+"""Mettre à jour une soutenance (Admin)"""
+type UpdateSoutenanceMutation {
+  success: Boolean
+  message: String
+  soutenance: SoutenanceType
+}
+
+"""Assigner un travail à une soutenance (Admin)"""
+type ProgrammerTravailMutation {
+  success: Boolean
+  message: String
+  travail: TravauxSoutenanceType
+}
+
+"""Marquer une soutenance comme terminée"""
+type MarquerSoutenanceTermineeMutation {
+  success: Boolean
+  message: String
+  soutenance: SoutenanceType
+}
+
+"""Soumettre un travail (Étudiant)"""
+type SubmitTravauxMutation {
+  success: Boolean
+  message: String
+  travail: TravauxSoutenanceType
+}
+
+"""Accepter un travail (Admin)"""
+type AccepterTravailMutation {
+  success: Boolean
+  message: String
+  travail: TravauxSoutenanceType
+}
+
+"""Rejeter un travail (Admin)"""
+type RejeterTravailMutation {
+  success: Boolean
+  message: String
+  travail: TravauxSoutenanceType
+}
+
+"""Ajouter un document (URL externe) à un travail"""
+type AjouterDocumentMutation {
+  success: Boolean
+  message: String
+  document: DocumentType
+}
+
+"""Assigner un jury à une soutenance (Admin)"""
+type AssignerJuryMutation {
+  success: Boolean
+  message: String
+  jury: JuryType
+}
+
+"""Saisir une note et commentaire (Jury)"""
+type SaisirNoteMutation {
+  success: Boolean
+  message: String
+  jury: JuryType
+}
+
+"""Marquer une notification comme lue"""
+type MarquerNotificationCommelueMutation {
+  success: Boolean
+  message: String
+  notification: NotificationType
+}
+
+"""Marquer toutes les notifications comme lues"""
+type MarquerToutCommelueMutation {
+  success: Boolean
+  message: String
+  count: Int
+}
+
+"""Créer une disponibilité (Enseignant)"""
+type CreateDisponibiliteMutation {
+  success: Boolean
+  message: String
+  disponibilite: DisponibiliteEnseignantType
+}

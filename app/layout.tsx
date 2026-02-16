@@ -36,9 +36,14 @@
 
 
 
+import type { Metadata } from "next";
 import { ReactNode } from "react";
 import MainRootLayout from "./Layoutbase";
 
+export const metadata: Metadata = {
+  title: "Thesis Manager",
+  description: "Plateforme de gestion de thèses et mémoires",
+};
 
 export default function Layout({children}:{children:ReactNode}){
   return(

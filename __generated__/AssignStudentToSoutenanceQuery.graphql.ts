@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a70340e1721064ad76252c54f92c8388>>
+ * @generated SignedSource<<a0d24d3ede46681993efb7e748b208ae>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { ConcreteRequest } from 'relay-runtime';
 export type AssignStudentToSoutenanceQuery$variables = Record<PropertyKey, never>;
 export type AssignStudentToSoutenanceQuery$data = {
-  readonly soutenances: ReadonlyArray<{
+  readonly soutenancesAVenir: ReadonlyArray<{
     readonly dateSoutenance: any | null | undefined;
     readonly heureDebut: any | null | undefined;
     readonly heureFin: any | null | undefined;
@@ -150,7 +150,7 @@ v3 = [
     "args": null,
     "concreteType": "SoutenanceType",
     "kind": "LinkedField",
-    "name": "soutenances",
+    "name": "soutenancesAVenir",
     "plural": true,
     "selections": [
       (v0/*: any*/),
@@ -206,16 +206,16 @@ return {
     "selections": (v3/*: any*/)
   },
   "params": {
-    "cacheID": "3277ac90b5d5ffd5938558394997e2fa",
+    "cacheID": "0f1e53d997f71ae8f4bb6397eae57520",
     "id": null,
     "metadata": {},
     "name": "AssignStudentToSoutenanceQuery",
     "operationKind": "query",
-    "text": "query AssignStudentToSoutenanceQuery {\n  travauxAcceptes {\n    id\n    titre\n    statut\n    etudiantNom\n    etudiant {\n      id\n      utilisateur {\n        id\n        firstName\n        lastName\n      }\n    }\n    soutenance {\n      id\n      dateSoutenance\n    }\n  }\n  soutenances {\n    id\n    dateSoutenance\n    heureDebut\n    heureFin\n    salle\n    modeDisplay\n    statut\n  }\n}\n"
+    "text": "query AssignStudentToSoutenanceQuery {\n  travauxAcceptes {\n    id\n    titre\n    statut\n    etudiantNom\n    etudiant {\n      id\n      utilisateur {\n        id\n        firstName\n        lastName\n      }\n    }\n    soutenance {\n      id\n      dateSoutenance\n    }\n  }\n  soutenancesAVenir {\n    id\n    dateSoutenance\n    heureDebut\n    heureFin\n    salle\n    modeDisplay\n    statut\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "e4c1231c0f4266e5b0b0531a9d7cdd28";
+(node as any).hash = "eefbc437acb241c2f59c59542f0f9d60";
 
 export default node;

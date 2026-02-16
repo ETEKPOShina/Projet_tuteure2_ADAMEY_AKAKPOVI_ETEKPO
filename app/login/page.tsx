@@ -1,101 +1,134 @@
 'use client';
 
-import { IconCopyright, IconCopyrightFilled, IconSchool } from "@tabler/icons-react";
-import { Button, Input, Stack, Text, XStack, YStack ,} from "tamagui";
+import { IconCopyrightFilled, IconSchool } from '@tabler/icons-react';
+import { Button, Input, Text, XStack, YStack } from 'tamagui';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/src/services/auth';
 
-export default function LoginPage(){
-    return(
-        <YStack flex={1}   bg={'#f6f6f8'} h={'100vh'} alignItems="center" justifyContent="center">
-            
-            <YStack alignItems="center" gap={10} >
-                <Button
-                 size={100}
-                 circular
-                //  bg={'#0e3cb3'}
-                 icon={<IconSchool size={50} color="#0e3cb3" stroke={3}/>}
-                 p={5}
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [localError, setLocalError] = useState<string | null>(null);
+  const { login, isLoading, error,user } = useAuth();
+  const router = useRouter();
 
+  const handleSubmit = async (e?: any) => {
+    e?.preventDefault();
+    setLocalError(null);
 
-                />
-                <YStack bg={'#ffffff'} flex={1} minWidth={200} maxWidth={400} p={30} br={20} gap={10}>
-                  <Text fontWeight={'$7'} fontSize={'$7'}>Bienvenue sur Thesis Manager </Text>
-                  <Text fontWeight={'$5'} fontSize={'$4'} textAlign="center" color={'gray'}> Votre plateforme de gestion de soutenance</Text>
+    // Validation
+    if (!email.trim() || !password.trim()) {
+      setLocalError('Email et mot de passe sont obligatoires');
+      return;
+    }
 
-                  
-                <YStack my={10}>
-                    <Text fontWeight={'$6'} fontSize={'$4'} color={'gray'}>Adresse Email</Text>
-                    <Input
-                     placeholder="adresse Email"
-                     
-                    />
-                </YStack>
+    try {
+      // Appeler login
+      const result = await login({
+        email: email.trim(),
+        password,
+      });
+      
 
-                 <YStack my={10}>
-                    <Text fontWeight={'$6'} fontSize={'$4'} color={'gray'}>Mots de passe</Text>
-                    <Input
-                     placeholder="mots de passe"
-                     
-                     
-                    />
-                </YStack>
+      // Si succès → rediriger
+      if (result.success) {
+        const currentUser = result.user;
+        if(currentUser?.typeUtilisateur == "ETUDIANT"){
+          router.push('/students')
+        } else if (currentUser?.typeUtilisateur == "ENSEIGNANT"){
+          router.push('/teacher/dashboard')
+        } else if (currentUser?.typeUtilisateur =="ADMINISTRATEUR"){
+          router.push('/admin')
+        } else {
+          router.push('/access-denied')
+        }
+        // router.push('/dashboard');
+      } else {
+        setLocalError(result.error || 'Erreur lors de la connexion');
+      }
+    } catch (err: any) {
+      setLocalError(err?.message || 'Erreur lors de la connexion');
+    }
+  };
 
-                <Button my={10}bg={'#0e3cb3'} color={'white'} fontWeight={'$6'} fontSize={'$5'}>Se connecter</Button>
-                </YStack>
-                <XStack gap={5}>
-                    <IconCopyrightFilled color="#808080" />
-                    <Text color={'gray'} fontWeight={'$6'}>Université de Lomé. Tous droits reservés</Text>
-                </XStack>
-            </YStack>
+  return (
+    <YStack flex={1} bg={'#f6f6f8'} h={'100vh'} alignItems="center" justifyContent="center">
+      <YStack alignItems="center" gap={10}>
+        <Button
+          size={100}
+          circular
+          icon={<IconSchool size={50} color="#0e3cb3" stroke={3} />}
+          p={5}
+        />
 
-            
-          {/* <YStack  flex={0.5} gap={10}>
-            <XStack alignItems="center" gap={6}>
-                <Button
-                 size={50}
-                 circular
-                //  bg={'#0e3cb3'}
-                 icon={<IconSchool size={25} color="#0e3cb3" stroke={3}/>}
-                 p={5}
+        <YStack bg={'#ffffff'} flex={1} minWidth={200} maxWidth={400} p={30} br={20} gap={10}>
+          <Text fontWeight={'$7'} fontSize={'$7'}>
+            Bienvenue sur Thesis Manager
+          </Text>
+          <Text fontWeight={'$5'} fontSize={'$4'} textAlign="center" color={'gray'}>
+            Votre plateforme de gestion de soutenance
+          </Text>
 
+          <YStack my={10}>
+            <Text fontWeight={'$6'} fontSize={'$4'} color={'gray'}>
+              Adresse Email
+            </Text>
+            <Input
+              value={email}
+              onChangeText={(v: string) => setEmail(v)}
+              placeholder="adresse Email"
+              editable={!isLoading}
+            />
+          </YStack>
 
-                />
-                <Text fontSize={'$6'} fontWeight={'$6'}>Portail de l'université de Lomé </Text>
-                
-            </XStack>
+          <YStack my={10}>
+            <Text fontWeight={'$6'} fontSize={'$4'} color={'gray'}>
+              Mot de passe
+            </Text>
+            <Input
+              value={password}
+              onChangeText={(v: string) => setPassword(v)}
+              placeholder="mot de passe"
+              secureTextEntry
+              editable={!isLoading}
+            />
+          </YStack>
 
-            <Text fontWeight={'$6'} fontSize={'$8'}>Bienvenue sur Thesis Manager</Text>
+          {(localError || error) && <Text color="red">{localError || error}</Text>}
 
-            <Text maxWidth={400} fontWeight={'$5'} color={'gray'}>Manage, schedule, and archive thesis defenses with a secure and centralized system designed for academic excellence.</Text>
-                   
-          </YStack> */}
-          {/* <YStack flex={0.5} p={10}  alignItems="center">
-            <YStack bg={'#ffffff'} flex={1} minWidth={200} maxWidth={400} p={30} br={20} >
-                <Text fontWeight={'$7'} fontSize={'$7'}>Se connecter</Text>
-                <Text fontWeight={'$5'} fontSize={'$4'} color={'gray'}>Entrez vos coordonnées pour vous connecter</Text>
+          <Button
+            my={10}
+            bg={'#0e3cb3'}
+            color={'white'}
+            fontWeight={'$6'}
+            fontSize={'$5'}
+            onPress={handleSubmit}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Connexion...' : 'Se connecter'}
+          </Button>
 
-                <YStack my={10}>
-                    <Text fontWeight={'$5'}>Adresse Email</Text>
-                    <Input
-                     placeholder="adresse Email"
-                     
-                    />
-                </YStack>
-
-                 <YStack my={10}>
-                    <Text fontWeight={'$5'}>Mots de passe</Text>
-                    <Input
-                     placeholder="mots de passe"
-                     
-                     
-                    />
-                </YStack>
-                
-                <Text textAlign="right" fontWeight={'$7'} fontSize={'$5'} color={'#0e3cb3'} cursor="pointer">mots de passe oublié ?</Text>
-                <Button my={10}bg={'#0e3cb3'} color={'white'} fontWeight={'$6'} fontSize={'$5'}>Se connecter</Button>
-
-            </YStack>
-          </YStack> */}
-
+          <Text textAlign="center" fontSize={'$3'} color={'gray'}>
+            Pas encore inscrit?{' '}
+            <Text
+              color={'#0e3cb3'}
+              fontWeight={'$6'}
+              onPress={() => router.push('/register')}
+              style={{ cursor: 'pointer' }}
+            >
+              Créer un compte
+            </Text>
+          </Text>
         </YStack>
-    )
+
+        <XStack gap={5}>
+          <IconCopyrightFilled color="#808080" />
+          <Text color={'gray'} fontWeight={'$6'}>
+            Université de Lomé. Tous droits réservés
+          </Text>
+        </XStack>
+      </YStack>
+    </YStack>
+  );
 }

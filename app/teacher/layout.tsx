@@ -26,27 +26,35 @@ import {
   IconMenu2,
   IconX
 } from '@tabler/icons-react'
+import { useAuth } from '@/src/services/auth'
+import ProtectedRoute from "@/src/components/ProtectedRoute";
 
 // Menu items configuration
 const menuItems = [
   { icon: IconLayoutDashboard, label: 'Tableau de bord', path: '/teacher/dashboard' },
-  { icon: IconStars, label: 'Mes Évaluations', path: '/teacher/evaluations' },
-  { icon: IconCalendarMonth, label: 'Calendrier Complet', path: '/teacher/calendar' },
-  { icon: IconArchive, label: 'Archives', path: '/teacher/archives' },
-  { icon: IconUser, label: 'Profil', path: '/teacher/profile' },
+  // { icon: IconStars, label: 'Mes Évaluations', path: '/teacher/evaluations' },
+  // { icon: IconCalendarMonth, label: 'Calendrier Complet', path: '/teacher/calendar' },
+  // { icon: IconArchive, label: 'Archives', path: '/teacher/archives' },
+  // { icon: IconUser, label: 'Profil', path: '/teacher/profile' },
 ]
 
 // Sidebar Component
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname()
   const router = useRouter()
+  const { user } = useAuth()
 
   const handleNavigation = (path: string) => {
     router.push(path)
     onNavigate?.()
   }
 
+  const teacherName = user?.firstName && user?.lastName 
+    ? `${user.firstName} ${user.lastName}`
+    : 'Professeur'
+
   return (
+    <ProtectedRoute requiredRole="ENSEIGNANT">
     <YStack gap="$6" f={1}>
       {/* Logo */}
       <XStack ai="center" gap="$3" px="$2">
@@ -71,7 +79,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             <Avatar.Fallback bc="$blue10" />
           </Avatar>
           <YStack f={1}>
-            <Text fontWeight="600" fontSize="$4">Professeur Durand</Text>
+            <Text fontWeight="600" fontSize="$4">{teacherName}</Text>
             <Text fontSize="$3" color="$gray11">Enseignant-Chercheur</Text>
           </YStack>
         </XStack>
@@ -133,6 +141,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         </Button>
       </YStack>
     </YStack>
+     </ProtectedRoute>
   )
 }
 
@@ -220,5 +229,6 @@ export default function DashboardLayout({
         </YStack>
       </ScrollView>
     </XStack>
+   
   )
 }
