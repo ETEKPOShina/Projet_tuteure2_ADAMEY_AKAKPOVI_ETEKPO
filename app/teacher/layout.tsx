@@ -54,7 +54,6 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     : 'Professeur'
 
   return (
-    <ProtectedRoute requiredRole="ENSEIGNANT">
     <YStack gap="$6" f={1}>
       {/* Logo */}
       <XStack ai="center" gap="$3" px="$2">
@@ -141,7 +140,6 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         </Button>
       </YStack>
     </YStack>
-     </ProtectedRoute>
   )
 }
 
